@@ -1,0 +1,18 @@
+# Ignore IntelliJ / PHPStorm IDE files
+.idea/
+*.iml
+
+# VS Code files
+.vscode/
+
+
+# Ignore IntelliJ / PHPStorm IDE files
+.idea/
+*.iml
+
+# VS Code files
+.vscode/
+
+# .md
+README.md
+TODO.md
