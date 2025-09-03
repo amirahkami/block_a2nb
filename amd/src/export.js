@@ -46,16 +46,38 @@ define(['jquery', 'core/notification'], function($, Notification) {
             .replace(/[^\w\s-]/g, '') // Remove symbols
             .replace(/\s+/g, '_'); // Spaces to underscores
 
+
+        // placeholder and extract code block
+        const temp = document.createElement('div');
+        temp.innerHTML = instructions || '';
+        const codeBlocks = [];
+
+        temp.querySelectorAll('pre').forEach(pre => {
+            const code = (pre.textContent || '').trim();
+            if (code) { codeBlocks.push(code); }
+            pre.remove();
+        });
+
+        const cleanedInstructions = temp.innerHTML;
+        const codesJson = JSON.stringify(codeBlocks);
+
         // Python code to generate notebook using nbformat
         const pythonCode = `
 import nbformat as nbf
+import json
 
 nb = nbf.v4.new_notebook()
 cells = []
 
 cells.append(nbf.v4.new_markdown_cell('### Assignment: ${name}\\n>This notebook was generated from Moodle A2NB Plugin.'))
 cells.append(nbf.v4.new_markdown_cell('#### Description:\\n${description}'))
-cells.append(nbf.v4.new_markdown_cell("""#### Instructions:\\n${instructions}"""))
+cells.append(nbf.v4.new_markdown_cell("""#### Instructions:\\n${cleanedInstructions}"""))
+
+
+codes = json.loads(${JSON.stringify(codesJson)})
+for code in codes:
+    cells.append(nbf.v4.new_code_cell(code))
+
 
 nb.cells = cells
 nb_str = nbf.writes(nb)
